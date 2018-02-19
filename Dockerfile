@@ -1,13 +1,13 @@
 FROM python:2-alpine
 MAINTAINER Jason Kulatunga <jason@thesparktree.com>
 LABEL name="aws-api-gateway-letsencrypt"
-LABEL version="1.0"
+LABEL version="1.1"
 
 RUN apk add --update --no-cache \
 	bash \
 	curl \
 	openssl \
-	dig \
+	bind-tools \
 	git \
 	&& rm -rf /var/cache/apk/*
 
