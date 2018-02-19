@@ -7,6 +7,7 @@ RUN apk add --update --no-cache \
 	bash \
 	curl \
 	openssl \
+	dig \
 	git \
 	&& rm -rf /var/cache/apk/*
 
