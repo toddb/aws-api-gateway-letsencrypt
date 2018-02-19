@@ -10,17 +10,16 @@ export PROVIDER=${PROVIDER:-"cloudflare"}
 export ZONE=${ZONE:-""}
 
 function deploy_challenge {
-    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}" ZONE="${4}"
+    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
 
     echo "deploy_challenge called: ${DOMAIN}, ${TOKEN_FILENAME}, ${TOKEN_VALUE}"
 
-    if [ -z $ZONE] then;
+    if [[ -z "$ZONE" ]]; then
         lexicon ${PROVIDER} create ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." --content="${TOKEN_VALUE}"
     else
-        echo "using delegated zone: ${ZONE}"
         local CNAME=`dig +short _acme-challenge.${DOMAIN}. CNAME`
         lexicon --delegated=${ZONE} ${PROVIDER} create ${DOMAIN} TXT --name="${CNAME:-_acme-challenge.${DOMAIN}.}" --content="${TOKEN_VALUE}"
-    if
+    fi
 
     sleep 30
 
@@ -41,21 +40,20 @@ function deploy_challenge {
     #   TXT record. For HTTP validation it is the value that is expected
     #   be found in the $TOKEN_FILENAME file.
     # - ZONE
-    #   The zone is hte delegated domain option for lexicon (and is an optional level of indirection)
+    #   The zone is the delegated domain option for lexicon (and is an optional level of indirection)
 }
 
 function clean_challenge {
-    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}" ZONE="${4}"
+    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
 
     echo "clean_challenge called: ${DOMAIN}, ${TOKEN_FILENAME}, ${TOKEN_VALUE}"
 
-   if [ -z $ZONE] then;
-    lexicon ${PROVIDER} delete ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." --content="${TOKEN_VALUE}"
+   if [[ -z "$ZONE" ]]; then
+        lexicon ${PROVIDER} delete ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." --content="${TOKEN_VALUE}"
    else
-        echo "using delegated zone: ${ZONE}"
         local CNAME=`dig +short _acme-challenge.${DOMAIN}. CNAME`
         lexicon --delegated=${ZONE} ${PROVIDER} delete ${DOMAIN} TXT --name="${CNAME:-_acme-challenge.${DOMAIN}.}" --content="${TOKEN_VALUE}"
-    if
+    fi
 
     # This hook is called after attempting to validate each domain,
     # whether or not validation was successful. Here you can delete
